@@ -4,6 +4,7 @@ from glob import glob
 import typer
 from PIL import Image
 import click_spinner
+from colorthief import ColorThief
 import alive_progress
 import srsly
 
@@ -59,7 +60,15 @@ def index(force: bool = False) -> None:
     srsly.write_yaml(f"{data_path}mons.yaml", mons)
     srsly.write_yaml(f"{data_path}fusions.yaml", fusions)
 
-
+@app.command()
+def colors(force: bool = False)-> None:
+    r, pathlist = {}, glob(f"{trim_path}*.png")
+    with alive_progress.alive_bar(len(pathlist)) as bar:
+        for fp in pathlist:
+            ct = ColorThief(fp)
+            r[fp.split('/')[-1]] = ct.get_palette(color_count=2)
+            bar()
+    srsly.write_yaml(f"{data_path}colors.yaml")
 
 if __name__ == "__main__":
     app()
