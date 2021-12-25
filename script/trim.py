@@ -24,6 +24,9 @@ def trim(quant: bool = False, force: bool = False) -> None:
     with click_spinner.spinner():
         pathlist = list_files()
 
+    if not os.path.exists(trim_path):
+        os.mkdir(trim_path)
+
     with alive_progress.alive_bar(len(pathlist)) as bar:
         for fp in pathlist:
             fn = fp.split("/")[-1]
