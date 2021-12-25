@@ -5,9 +5,11 @@ import typer
 from PIL import Image
 import click_spinner
 import alive_progress
+import srsly
 
 src_path = '../Battlers/'
 trim_path = '../Battlers_trim/'
+data_path = '../Data/'
 
 app = typer.Typer()
 
@@ -34,8 +36,30 @@ def trim(quant: bool = False, force: bool = False) -> None:
             if not os.path.exists(dest_path) or force:
                 im = Image.open(fp)
                 im_trim = im.crop(im.getbbox())
+                if quant:
+                    im_trim.convert("P", palette=Image.ADAPTIVE)
                 im_trim.save(dest_path, "PNG")
             bar()
+
+@app.command()
+def index(force: bool = False) -> None:
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+
+    pathlist = list_files()
+    mons, fusions = [], []
+    for fp in pathlist:
+        fn = fp.split('/')[-1]
+        fns = fn.split('.')
+        if len(fns) == 3:
+            if fns[0] == fns[1]:
+                mons.append(int(fns[0]))
+            else:
+                fusions.append((int(fns[0]), int(fns[1])))
+    srsly.write_yaml(f"{data_path}mons.yaml", mons)
+    srsly.write_yaml(f"{data_path}fusions.yaml", fusions)
+
+
 
 if __name__ == "__main__":
     app()
