@@ -1,4 +1,3 @@
-GNU nano 5.4                                      util.py
 import os
 from glob import glob
 
