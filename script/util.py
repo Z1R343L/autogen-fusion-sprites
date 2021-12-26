@@ -57,8 +57,8 @@ def index(force: bool = False) -> None:
                 mons.append(int(fns[0]))
             else:
                 fusions.append((int(fns[0]), int(fns[1])))
-    srsly.write_yaml(f"{data_path}mons.yaml", mons)
-    srsly.write_yaml(f"{data_path}fusions.yaml", fusions)
+    srsly.write_msgpack(f"{data_path}mons.msgpack", mons)
+    srsly.write_msgpack(f"{data_path}fusions.msgpack", fusions)
 
 @app.command()
 def colors(force: bool = False)-> None:
@@ -68,7 +68,7 @@ def colors(force: bool = False)-> None:
             ct = ColorThief(fp)
             r[fp.split('/')[-1]] = ct.get_palette(color_count=2)
             bar()
-    srsly.write_yaml(f"{data_path}colors.yaml")
+    srsly.write_msgpack(f"{data_path}colors.msgpack", data=r)
 
 if __name__ == "__main__":
     app()
